@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Repositories;
-using Infrastructure.Data.Contexts;
+using Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Infrastructure.Data.Repositories
+namespace Infrastructure.Repositories
 {
     public class UserRepository : RepositoryBase<User>, IUserRepository
     {
-        public UserRepository(DBContext context): base(context)
+        public UserRepository(DBContext context) : base(context)
         {
         }
 
@@ -23,9 +23,9 @@ namespace Infrastructure.Data.Repositories
             _dbContext.User.Remove(entity);
         }
 
-        public async Task<bool> ExistsAsync(string firstName)
+        public async Task<bool> ExistsAsync(string email)
         {
-            return await _dbContext.User.AnyAsync(b => b.FirstName.Equals(firstName));  
+            return await _dbContext.User.AnyAsync(b => b.Email.Equals(email));
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()

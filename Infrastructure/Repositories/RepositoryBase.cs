@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
-using Domain.Interfaces.Repositories;
-using Infrastructure.Data.Contexts;
+﻿using Domain.Core.Entity;
+using Domain.Core.Interfaces;
+using Infrastructure.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data.Repositories
+namespace Infrastructure.Repositories
 {
     public class RepositoryBase<T> : IRepository<T> where T : IEntity
     {

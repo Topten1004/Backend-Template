@@ -1,14 +1,13 @@
-﻿using MediatR;
+﻿using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.Entities;
 
-namespace Application.Queries
+namespace Domain.Commands.User
 {
-    public class GetUserListQuery : IRequest<List<User>>
+    public class CreateUserCommand : UserCommandBase
     {
     }
 }

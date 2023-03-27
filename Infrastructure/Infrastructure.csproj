@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Data\Configuration\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Configuration\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

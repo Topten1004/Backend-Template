@@ -1,18 +1,18 @@
-﻿using System;
+﻿using Application.Commands;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.Core.Entity;
 
-namespace Domain.Entities
+namespace Domain.Commands.User
 {
-    public class User : Entity
+    public abstract class UserCommandBase : CommandBase
     {
-        public Guid Id { get; set; }
         public string FirstName { get; set; }
+
         public string LastName { get; set; }
+
         public string Email { get; set; }
     }
 }

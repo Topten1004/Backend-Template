@@ -1,6 +1,6 @@
 ﻿using Domain.Interfaces.Repositories;
-using Infrastructure.Data.Contexts;
-using Infrastructure.Data.Repositories;
+using Infrastructure.Contexts;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

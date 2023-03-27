@@ -1,11 +1,11 @@
-﻿using Domain.Entities;
+﻿using Domain.Core.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Interfaces.Repositories
+namespace Domain.Core.Interfaces
 {
     public interface IRepository<in T> : IDisposable where T : IEntity
     {

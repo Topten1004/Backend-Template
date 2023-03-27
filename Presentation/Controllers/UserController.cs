@@ -1,10 +1,11 @@
 ﻿using Application.Commands;
 using Application.Queries;
-using MediatR;
+using Domain.Commands.User;
+using Domain.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Presentation.ViewModels.Request;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Presentation.Controllers
 {
@@ -12,11 +13,20 @@ namespace Presentation.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly ICommandHandler<CreateUserCommand> _createUserCommandHandler;
+        private readonly ICommandHandler<UpdateUserCommand> _updateUserCommandHandler;
+        private readonly ICommandHandler<DeleteUserCommand> _deleteUserCommandHandler;
+        private readonly IUserQueries _userQuries;
 
-        public UserController(IMediator mediator)
+        public UserController(ICommandHandler<CreateUserCommand> createUserCommandHandler,
+            ICommandHandler<UpdateUserCommand> updateCommandHandler,
+            ICommandHandler<DeleteUserCommand> deleteCommandHandler,
+            IUserQueries userQuries)
         {
-            _mediator = mediator;
+            _createUserCommandHandler = createUserCommandHandler;
+            _updateUserCommandHandler = updateCommandHandler;
+            _deleteUserCommandHandler = deleteCommandHandler;
+            _userQuries = userQuries;
         }
 
         #region Get all Users list
@@ -29,7 +39,6 @@ namespace Presentation.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="501">Internel server error</response>
 
-        [Authorize()]
         [HttpGet("GetUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -38,8 +47,7 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> GetUsers()
         {
-            var results = await _mediator.Send(new GetUserListQuery());
-            return Ok(results);
+            return Ok(_userQuries.GetAllAsync().Result);
         }
 
         #endregion
@@ -54,16 +62,67 @@ namespace Presentation.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="501">Internel server error</response>
 
-        [Authorize()]
         [HttpPost("CreateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public async Task<IActionResult> CreateUser(CreateUserVM model)
-        {    
-            return Ok();
+        public async Task<IActionResult> CreateUser(CreateUserCommand model)
+        {
+            var result = await _createUserCommandHandler.HandleAsync(model);
+
+            if (result.Success)
+                return Ok(model);
+
+            return BadRequest(result.Errors);
+        }
+
+        #endregion
+
+        #region Update User
+
+        /// <summary>
+        /// Get All Users
+        /// </summary>
+        /// <returns>Get list of all Users</returns>
+        /// <response code="200"></response>
+        /// <response code="400">Not found</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="501">Internel server error</response>
+
+        [HttpPut("UpdateUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PutAsync(UpdateUserCommand command)
+        {
+            var result = await _updateUserCommandHandler.HandleAsync(command);
+
+            if (result.Success)
+                return Ok(command);
+
+            return BadRequest(result.Errors);
+        }
+
+        #endregion
+
+        #region Delete User
+
+        [HttpDelete("DeleteUser/")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteAsync(DeleteUserCommand command)
+        {
+            var result = await _deleteUserCommandHandler.HandleAsync(command);
+
+            if (result.Success)
+                return Ok(command);
+
+            return BadRequest(result.Errors);
         }
 
         #endregion

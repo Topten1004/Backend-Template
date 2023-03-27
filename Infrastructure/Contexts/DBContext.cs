@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data.Contexts
+namespace Infrastructure.Contexts
 {
     public class DBContext : DbContext
     {
