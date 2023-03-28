@@ -1,17 +1,17 @@
-﻿using Application.Handlers;
-using Application.Queries;
-using Domain.Commands.User.Validators;
-using Domain.Commands.User;
-using Domain.Core.Interfaces;
-using Domain.Interfaces.Repositories;
+﻿using Application.Queries;
 using FluentValidation;
 using Infrastructure.Repositories;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Infrastructure.Interfaces.Repositories;
+using Application.Interfaces;
+using Application.Queries.Users.GetAllUsers;
+using MediatR;
+using Application.Commands.Users.UpdateUser;
+using Application.Commands.Users.CreateUser;
+using Application.Commands.Users.DeleteUser;
 
 namespace Presentation
 {
@@ -64,24 +64,21 @@ namespace Presentation
 
             services.AddControllers();
 
-            // dbcontext
+            // dbContext
             services.AddDbContext<DBContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            //data
+            // data
             services.AddScoped<IUserRepository, UserRepository>();
 
-            //validators
-            services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
-            services.AddScoped<IValidator<UpdateUserCommand>, UpdateUserCommandValidator>();
-            services.AddScoped<IValidator<DeleteUserCommand>, DeleteUserCommandValidator>();
-
-            //commandHandlers
-            services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserCommandHandler>();
-            services.AddScoped<ICommandHandler<UpdateUserCommand>, UpdateUserCommandHandler>();
-            services.AddScoped<ICommandHandler<DeleteUserCommand>, DeleteUserCommandHandler>();
-
-            //queries
+            // queries
             services.AddScoped<IUserQueries, UserQueries>();
+
+            // mediatR
+            services.AddMediatR(typeof(GetAllUsersQuery).Assembly);
+            services.AddMediatR(typeof(UpdateUserCommand).Assembly);
+            services.AddMediatR(typeof(CreateUserCommand).Assembly);
+            services.AddMediatR(typeof(DeleteUserCommand).Assembly);
+
         }
     }
 }

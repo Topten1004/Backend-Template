@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Commands.Users.CreateUser;
+using Application.Commands.Users.UpdateUser;
 using AutoMapper;
-using Domain.Commands.User;
 
 namespace Application.Mapper
 {

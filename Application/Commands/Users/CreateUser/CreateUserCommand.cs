@@ -1,16 +1,15 @@
-﻿using Domain.Interfaces;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.Commands.Users.CreateUser
 {
-    public class User : Entity
+    public class CreateUserCommand : ICommand<User>
     {
-        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

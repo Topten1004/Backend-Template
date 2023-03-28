@@ -1,11 +1,12 @@
-﻿using Application.Commands;
+﻿using Application.Commands.Users.CreateUser;
+using Application.Commands.Users.DeleteUser;
+using Application.Commands.Users.UpdateUser;
+using Application.Interfaces;
 using Application.Queries;
-using Domain.Commands.User;
-using Domain.Core.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Application.Queries.Users.GetAllUsers;
+using Application.Queries.Users.GetUser;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Presentation.Controllers
 {
@@ -13,20 +14,11 @@ namespace Presentation.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ICommandHandler<CreateUserCommand> _createUserCommandHandler;
-        private readonly ICommandHandler<UpdateUserCommand> _updateUserCommandHandler;
-        private readonly ICommandHandler<DeleteUserCommand> _deleteUserCommandHandler;
-        private readonly IUserQueries _userQuries;
+        private readonly IMediator _mediator;
 
-        public UserController(ICommandHandler<CreateUserCommand> createUserCommandHandler,
-            ICommandHandler<UpdateUserCommand> updateCommandHandler,
-            ICommandHandler<DeleteUserCommand> deleteCommandHandler,
-            IUserQueries userQuries)
+        public UserController(IMediator mediator)
         {
-            _createUserCommandHandler = createUserCommandHandler;
-            _updateUserCommandHandler = updateCommandHandler;
-            _deleteUserCommandHandler = deleteCommandHandler;
-            _userQuries = userQuries;
+            _mediator = mediator;
         }
 
         #region Get all Users list
@@ -47,7 +39,10 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> GetUsers()
         {
-            return Ok(_userQuries.GetAllAsync().Result);
+            var query = new GetAllUsersQuery();
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         #endregion
@@ -70,12 +65,9 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> CreateUser(CreateUserCommand model)
         {
-            var result = await _createUserCommandHandler.HandleAsync(model);
+            var result = await _mediator.Send(model);
 
-            if (result.Success)
-                return Ok(model);
-
-            return BadRequest(result.Errors);
+            return BadRequest(result);
         }
 
         #endregion
@@ -98,12 +90,9 @@ namespace Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PutAsync(UpdateUserCommand command)
         {
-            var result = await _updateUserCommandHandler.HandleAsync(command);
+            var result = await _mediator.Send(command);
 
-            if (result.Success)
-                return Ok(command);
-
-            return BadRequest(result.Errors);
+            return Ok(command);
         }
 
         #endregion
@@ -117,12 +106,9 @@ namespace Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteAsync(DeleteUserCommand command)
         {
-            var result = await _deleteUserCommandHandler.HandleAsync(command);
+            var result = await _mediator.Send(command);
 
-            if (result.Success)
-                return Ok(command);
-
-            return BadRequest(result.Errors);
+            return Ok(command);
         }
 
         #endregion

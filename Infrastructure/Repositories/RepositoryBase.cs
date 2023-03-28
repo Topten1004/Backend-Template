@@ -1,6 +1,6 @@
-﻿using Domain.Core.Entity;
-using Domain.Core.Interfaces;
+﻿using Domain.Interfaces;
 using Infrastructure.Contexts;
+using Infrastructure.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
